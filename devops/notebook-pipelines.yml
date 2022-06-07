@@ -4,10 +4,11 @@ variables:
 - group: Databricks-prod-environment
 
 
-on: 
-  push:
-    branches:    
-      - master
+trigger:
+  batch: true
+  branches:
+    include:
+    - '*'
 
   tags:
     include:
