@@ -9,20 +9,9 @@ jobs:
     environment: DEV
     steps:
     - uses: ./.github/workflows/notebook_template.yml
-      with: 
-        name: OctoCat
 
   job2:
     runs-on: ubuntu-latest
     environment: STAGING
     steps:
     - uses: ./.github/workflows/notebook_template.yml
-      with: 
-        name: OctoCat    
-
-  job3:
-    runs-on: ubuntu-latest
-    environment: PROD
-    needs: job1
-    steps:
-    - run: echo ${{ needs.job1.outputs.firstword }} ${{ needs.job1.outputs.secondword }}

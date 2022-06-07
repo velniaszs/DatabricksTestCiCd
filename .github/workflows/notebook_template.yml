@@ -3,11 +3,13 @@ name: Reusable workflow
 on:
   workflow_call:
     # Map the workflow outputs to job outputs
-inputs:
-  name: 
-    description: 'Your name'
-    default: 'No name provided'
-runs:
-  using: "composite"
-  steps: 
-    - run: echo Hello ${{ inputs.name }}.
+
+jobs:
+  do-it:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run a one-line script
+        run: echo Hello, world!
