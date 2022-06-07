@@ -7,12 +7,14 @@ jobs:
   job1:
     runs-on: ubuntu-latest
     environment: DEV
-    uses: ./.github/workflows/notebook_template.yml
+    steps:
+      - uses: ./.github/workflows/notebook_template.yml
 
   job2:
     runs-on: ubuntu-latest
     environment: STAGING
-    uses: ./.github/workflows/notebook_template.yml    
+    steps:
+      - uses: ./.github/workflows/notebook_template.yml    
 
   job3:
     runs-on: ubuntu-latest
