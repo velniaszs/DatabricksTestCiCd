@@ -1,4 +1,4 @@
-name: Notebook CI
+name: Notebook CD
 
 on: workflow_dispatch
 
