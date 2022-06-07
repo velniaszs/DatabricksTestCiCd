@@ -3,6 +3,6 @@ name: Notebook CD
 on: workflow_dispatch
 
 jobs:
-  run notebooks template:
-  uses: ./.github/workflows/notebook_template.yml
-  secrets: inherit
+  run-notebooks-template:
+    uses: ./.github/workflows/notebook_template.yml
+    secrets: inherit
