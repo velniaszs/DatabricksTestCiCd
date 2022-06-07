@@ -1,9 +1,6 @@
 name: Notebook CI
 
-on: 
-  push:
-    branches:    
-      - master 
+on: workflow_dispatch
 
 jobs:
   build:
