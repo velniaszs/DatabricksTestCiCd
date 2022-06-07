@@ -1,3 +1,13 @@
-- name: Environment / Context
-  run: |
-    env | sort
+name: Notebook Template
+
+on:
+  workflow_call:
+
+
+jobs:
+
+  do-something-else:
+    runs-on: ubuntu-latest
+
+    steps:
+    - run: echo "Hello"
