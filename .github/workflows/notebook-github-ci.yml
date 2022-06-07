@@ -4,7 +4,6 @@ on: workflow_dispatch
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -17,9 +16,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install -e .
-      env:
-        CI: true
-      
     - name: Run Unit tests
       run: |
         pytest common/tests --cov
+    - name: Create Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: Notebook-build
+        path: Notebook-build

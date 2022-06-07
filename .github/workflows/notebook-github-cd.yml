@@ -1,0 +1,13 @@
+name: Notebook CI
+
+on: workflow_dispatch
+
+jobs:
+  deployment:
+    needs: Notebook CI
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      pass-secrets-to-workflow:
+      uses: ./.github/workflows/templates/notebook_template.yml
+      secrets: inherit
