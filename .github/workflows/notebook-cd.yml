@@ -1,10 +1,14 @@
 name: Notebook CD
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
 
 jobs:
-  run-notebooks-template:
+  job1:
+    uses: ./.github/workflows/notebook_template.yml
+
+  job2:
     runs-on: ubuntu-latest
-    environment: production
+    needs: job1
     steps:
-      - uses: ./.github/workflows/notebook_template.yml
+      - run: echo ${{ needs.job1.outputs.firstword }} ${{ needs.job1.outputs.secondword }}
