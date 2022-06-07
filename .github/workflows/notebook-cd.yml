@@ -4,5 +4,8 @@ on: workflow_dispatch
 
 jobs:
   run-notebooks-template:
-    uses: ./.github/workflows/notebook_template.yml
-    secrets: inherit
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: ./.github/workflows/notebook_template.yml
+        secrets: inherit
