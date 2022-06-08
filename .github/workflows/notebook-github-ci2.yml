@@ -57,9 +57,22 @@ jobs:
       env:
         DATABRICKS_HOST: ${{ secrets.databricksDomain }}
         DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
-
-
-
+    - name: Install libs in Databricks
+      run: |
+        echo "Installing libs dbfs:/lib-dist ..."
+        for file in `databricks fs ls dbfs:/lib-dist --absolute`
+        do
+            extension="${file##*.}"
+            if [ $extension = "whl" ]
+            then
+                echo "Installing libs $file ..."
+                databricks libraries install --cluster-id $CLUSTER --whl $file
+            fi
+        done
+      env:
+        DATABRICKS_HOST: ${{ secrets.databricksDomain }}
+        DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
+        CLUSTER: ${{ secrets.databricksClusterId }}
 
 
 #  deploy-notebook-job:
