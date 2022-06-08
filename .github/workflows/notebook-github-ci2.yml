@@ -1,0 +1,84 @@
+name: Notebook CI
+
+on: workflow_dispatch
+
+jobs:
+  test-lib-job:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Environment / Context
+      run: |
+        env | sort
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -e .
+    - name: Run Unit tests
+      run: |
+        pytest common/tests --cov
+    - name: Create Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: Notebook-build
+        path: Notebook-build
+
+  deploy-lib-job:
+    runs-on: ubuntu-latest
+    environment: DEV
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -e .
+    - name: Build wheel package
+      run: |
+        python setup.py bdist_wheel --universal
+    - name: Create Library Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: libs
+        path: dist
+    - name: Setup  databricks-cli
+      run: |
+        python -m pip install --upgrade pip
+        pip install databricks-cli
+    - name: Upload libs to Databricks
+      run: |
+        echo "Uploading libs at ./dist to workspace dbfs:/lib-dist ..."
+        databricks fs mkdirs dbfs:/lib-dist
+        databricks fs cp "./dist" dbfs:/lib-dist --recursive --overwrite
+      env:
+        DATABRICKS_HOST: ${{ secrets.databricksDomain }}
+        DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
+
+
+
+
+
+#  deploy-notebook-job:
+#    runs-on: ubuntu-latest
+
+ #   steps:
+ #   - uses: actions/checkout@v2
+ #   - name: Environment / Context
+ #     run: |
+ #       env | sort
+ #   - name: Install dependencies
+ #     run: |
+ #       python -m pip install --upgrade pip
+ #       pip install -r requirements.txt
+ #       pip install -e .
+ #   - name: Run Unit tests
+ #     run: |
+ #       pytest common/tests --cov
+ #   - name: Create Artifact
+ #     uses: actions/upload-artifact@v3
+ #     with:
+ #       name: Notebook-build
+ #       path: Notebook-build
