@@ -26,6 +26,7 @@ jobs:
         path: Notebook-build
 
   deploy-lib-job:
+    needs: test-lib-job
     runs-on: ubuntu-latest
     environment: DEV
 
