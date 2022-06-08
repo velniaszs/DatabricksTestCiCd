@@ -1,4 +1,4 @@
-name: Notebook CI
+name: Notebook CI v2
 
 on: workflow_dispatch
 
