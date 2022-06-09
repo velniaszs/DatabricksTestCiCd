@@ -87,8 +87,8 @@ jobs:
         pip install databricks-cli
     - name: Deploy notebooks
       run: |
-        echo "Uploading notebooks at ./notebook_jobs to workspace /Shared/notebook-tests/dbxbuild_$(Build.BuildId)/ ..."
-        databricks workspace import_dir --overwrite "./notebook_jobs" "/Shared/notebook-tests/dbxbuild_$(Build.BuildId)/"
+        echo "Uploading notebooks at ./notebook_jobs to workspace /Shared/notebook-tests/dbxbuild_${{github.run_number}}/ ..."
+        databricks workspace import_dir --overwrite "./notebook_jobs" "/Shared/notebook-tests/dbxbuild_${{github.run_number}}/"
       env:
         DATABRICKS_HOST: ${{ secrets.databricksDomain }}
         DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
