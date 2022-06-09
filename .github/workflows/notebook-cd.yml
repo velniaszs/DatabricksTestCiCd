@@ -6,6 +6,6 @@ on:
 jobs:
   build-ubuntu:
     name: Build app on Ubuntu
-    uses: octodemo/colind-reusable-workflows/.github/workflows/dotnetbuild.yml@main
+    uses: ./.github/workflows/notebook_template.yml
     with:
       runs-on: ubuntu-latest
