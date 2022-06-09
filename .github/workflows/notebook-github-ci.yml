@@ -3,11 +3,11 @@ name: Notebook CI
 on: workflow_dispatch
 
 jobs:
-  build:
+  test-lib-job:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1 
+    - uses: actions/checkout@v3
     - name: Environment / Context
       run: |
         env | sort
@@ -16,11 +16,18 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install -e .
+    - name: Build wheel package
+      run: |
+        python setup.py bdist_wheel --universal
+    - name: copy libs and notebooks
+      run: |
+        cp -r ./dist ./artifacts/libs
+        cp -r ./notebook_jobs ./artifacts/notebook_jobs
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: artifacts
+        path: artifacts
     - name: Run Unit tests
       run: |
         pytest common/tests --cov
-    - name: Create Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: Notebook-build
-        path: Notebook-build
