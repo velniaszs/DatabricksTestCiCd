@@ -3,7 +3,7 @@ name: Notebook CI
 on: workflow_dispatch
 
 jobs:
-  test-lib-job:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,6 +21,7 @@ jobs:
         python setup.py bdist_wheel --universal
     - name: copy libs and notebooks
       run: |
+        mkdir artifacts 
         cp -r ./dist ./artifacts/libs
         cp -r ./notebook_jobs ./artifacts/notebook_jobs
     - name: Publish Artifacts
