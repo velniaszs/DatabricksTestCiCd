@@ -1,11 +1,18 @@
-name: Notebook CD
+name: Notebook template
 
 on:
   workflow_dispatch:
 
 jobs:
   job1:
-    runs-on: ubuntu-latest
     environment: DEV
     steps:
     - uses: ./.github/workflows/notebook_template.yml
+
+
+jobs:
+  build-ubuntu:
+    name: Build app on Ubuntu
+    uses: octodemo/colind-reusable-workflows/.github/workflows/dotnetbuild.yml@main
+    with:
+      runs-on: ubuntu-latest

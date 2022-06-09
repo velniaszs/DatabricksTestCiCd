@@ -2,11 +2,15 @@ name: Reusable workflow
 
 on:
   workflow_call:
-    # Map the workflow outputs to job outputs
+    inputs:
+      runs-on:
+        description: Platform to execute on
+        type: string
+        default: ubuntu-latest
 
 jobs:
   do-it:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runs-on }}
 
     steps:
       - uses: actions/checkout@v2
