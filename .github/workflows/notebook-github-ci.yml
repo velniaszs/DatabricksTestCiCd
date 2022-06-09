@@ -1,4 +1,4 @@
-name: Notebook CI
+name: Notebook github ci
 
 on: workflow_dispatch
 
