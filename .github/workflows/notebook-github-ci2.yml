@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Environment / Context
       run: |
         env | sort
@@ -31,7 +31,7 @@ jobs:
     environment: DEV
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -74,25 +74,27 @@ jobs:
         DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
         CLUSTER: ${{ secrets.databricksClusterId }}
 
+  deploy-notebooks-job:
+    needs: deploy-lib-job
+    runs-on: ubuntu-latest
+    environment: DEV
 
-#  deploy-notebook-job:
-#    runs-on: ubuntu-latest
-
- #   steps:
- #   - uses: actions/checkout@v2
- #   - name: Environment / Context
- #     run: |
- #       env | sort
- #   - name: Install dependencies
- #     run: |
- #       python -m pip install --upgrade pip
- #       pip install -r requirements.txt
- #       pip install -e .
- #   - name: Run Unit tests
- #     run: |
- #       pytest common/tests --cov
- #   - name: Create Artifact
- #     uses: actions/upload-artifact@v3
- #     with:
- #       name: Notebook-build
- #       path: Notebook-build
+    steps:
+    - uses: actions/checkout@v3
+    - name: setup python 3.8
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.8"
+        architecture: "x64"
+    - name: Setup  databricks-cli
+      run: |
+        python -m pip install --upgrade pip
+        pip install databricks-cli
+    - name: Deploy notebooks
+      run: |
+        echo "Uploading notebooks at ./notebook_jobs to workspace /Shared/notebook-tests/dbxbuild_$(Build.BuildId)/ ..."
+        databricks workspace import_dir --overwrite "./notebook_jobs" "/Shared/notebook-tests/dbxbuild_$(Build.BuildId)/"
+      env:
+        DATABRICKS_HOST: ${{ parameters.databricksDomain }}
+        DATABRICKS_TOKEN: ${{ parameters.databricksToken }}
+        DATABRICKS_NOTEBOOK_PATH: ${{ parameters.databricksNotebookPath }}
