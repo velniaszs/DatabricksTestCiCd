@@ -95,6 +95,6 @@ jobs:
         echo "Uploading notebooks at ./notebook_jobs to workspace /Shared/notebook-tests/dbxbuild_$(Build.BuildId)/ ..."
         databricks workspace import_dir --overwrite "./notebook_jobs" "/Shared/notebook-tests/dbxbuild_$(Build.BuildId)/"
       env:
-        DATABRICKS_HOST: ${{ parameters.databricksDomain }}
-        DATABRICKS_TOKEN: ${{ parameters.databricksToken }}
-        DATABRICKS_NOTEBOOK_PATH: ${{ parameters.databricksNotebookPath }}
+        DATABRICKS_HOST: ${{ secrets.databricksDomain }}
+        DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
+        DATABRICKS_NOTEBOOK_PATH: ${{ secrets.databricksNotebookPath }}
