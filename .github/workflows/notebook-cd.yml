@@ -23,7 +23,7 @@ jobs:
     secrets: inherit    
   deploy-produciton:
     needs: deploy-staging
-    name: produciton
+    name: production
     uses: ./.github/workflows/template_deploy_libs_notebooks.yml
     with:
       runs-on: ubuntu-latest
