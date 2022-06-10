@@ -65,9 +65,9 @@ jobs:
         CLUSTER: ${{ secrets.databricksClusterId }}
     - name: Deploy notebooks
       run: |
-        echo "Uploading notebooks at ./notebook_jobs to workspace ${{ DATABRICKS_NOTEBOOK_PATH }} ..."
-        databricks workspace import_dir --overwrite "./notebook_jobs" "${{ DATABRICKS_NOTEBOOK_PATH }}"
+        echo "Uploading notebooks at ./notebook_jobs to workspace ${{ inputs.DATABRICKS_NOTEBOOK_PATH }} ..."
+        databricks workspace import_dir --overwrite "./notebook_jobs" "${{ inputs.DATABRICKS_NOTEBOOK_PATH }}"
       env:
         DATABRICKS_HOST: ${{ secrets.databricksDomain }}
         DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
-        DATABRICKS_NOTEBOOK_PATH: ${{ secrets.databricksNotebookPath }}
+        DATABRICKS_NOTEBOOK_PATH: ${{ inputs.databricksNotebookPath }}
