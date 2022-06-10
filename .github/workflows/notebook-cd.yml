@@ -5,7 +5,7 @@ on:
 
 jobs:
   deploy-dev:
-    name: Deploy libs and notebooks to DEV Databricks
+    name: Deploy DEV
     uses: ./.github/workflows/template_deploy_libs_notebooks.yml
     with:
       runs-on: ubuntu-latest

@@ -1,4 +1,4 @@
-name: Template - CD Libs and Notebooks 
+name: deploy
 
 on:
   workflow_call:
