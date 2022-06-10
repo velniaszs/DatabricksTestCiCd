@@ -36,9 +36,9 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install databricks-cli
         pip install -r requirements.txt
         pip install -e .     
+        pip install databricks-cli
     - name: Upload libs to Databricks
       run: |
         echo "Uploading libs at ./libs to workspace dbfs:/lib-dist ..."
