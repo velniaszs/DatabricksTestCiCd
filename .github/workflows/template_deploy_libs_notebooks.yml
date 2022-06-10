@@ -1,4 +1,4 @@
-name: deploy
+name: template deploy
 
 on:
   workflow_call:
