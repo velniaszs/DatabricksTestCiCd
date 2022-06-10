@@ -1,4 +1,4 @@
-name: Notebook github cd
+name: Notebook CD
 
 on: workflow_dispatch
 
