@@ -24,6 +24,7 @@ jobs:
         mkdir artifacts 
         cp -r ./dist ./artifacts/libs
         cp -r ./notebook_jobs ./artifacts/notebook_jobs
+        cp requirements.txt ./artifacts
     - name: Publish Artifacts
       uses: actions/upload-artifact@v3
       with:
