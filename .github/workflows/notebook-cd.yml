@@ -27,6 +27,6 @@ jobs:
     uses: ./.github/workflows/template_deploy_libs_notebooks.yml
     with:
       runs-on: ubuntu-latest
-      env: produciton
+      env: production
       DATABRICKS_NOTEBOOK_PATH: /Shared/notebooks-release/
     secrets: inherit    
