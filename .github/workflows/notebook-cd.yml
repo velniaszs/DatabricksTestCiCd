@@ -1,4 +1,4 @@
-name: Notebook ci use template
+name: Notebook cd with template
 
 on:
   workflow_dispatch:
