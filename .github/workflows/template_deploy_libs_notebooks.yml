@@ -41,9 +41,9 @@ jobs:
         pip install -e .     
     - name: Upload libs to Databricks
       run: |
-        echo "Uploading libs at ./dist to workspace dbfs:/lib-dist ..."
+        echo "Uploading libs at ./libs to workspace dbfs:/lib-dist ..."
         databricks fs mkdirs dbfs:/lib-dist
-        databricks fs cp "./dist" dbfs:/lib-dist --recursive --overwrite
+        databricks fs cp "./libs" dbfs:/lib-dist --recursive --overwrite
       env:
         DATABRICKS_HOST: ${{ secrets.databricksDomain }}
         DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
