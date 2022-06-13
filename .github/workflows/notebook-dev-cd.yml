@@ -1,9 +1,11 @@
 name: Notebook CD Dev
 
-on:
+ on:
   workflow_run:
-    workflows: ["Notebook dev CI"]
-    types: [completed]
+    workflows:
+      - 'Notebook dev CI'
+    types:
+      - completed   
 
 jobs:
   deploy-dev:
