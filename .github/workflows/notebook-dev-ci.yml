@@ -3,7 +3,7 @@ name: Notebook dev CI
 on:
   pull_request:
     types: [opened, reopened]
-    branches:    
+    branches:  
       - 'dev'  
 
 jobs:
