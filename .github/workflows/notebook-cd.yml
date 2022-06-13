@@ -1,7 +1,11 @@
-name: Notebook CD with Template
+name: Notebook CD Dev
 
 on:
-  workflow_dispatch:
+  workflow_run:
+    workflows: ["Notebook dev CI"]
+    types: [completed]
+    branches:
+      - 'dev'
 
 jobs:
   deploy-dev:
@@ -12,21 +16,3 @@ jobs:
       env: DEV
       DATABRICKS_NOTEBOOK_PATH: /Shared/notebook-tests/dbxbuild_${{github.run_number}}/
     secrets: inherit
-  deploy-staging:
-    needs: deploy-dev
-    name: STAGING
-    uses: ./.github/workflows/template_deploy_libs_notebooks.yml
-    with:
-      runs-on: ubuntu-latest
-      env: STAGING
-      DATABRICKS_NOTEBOOK_PATH: /Shared/notebook-tests/dbxbuild_${{github.run_number}}/
-    secrets: inherit    
-  deploy-produciton:
-    needs: deploy-staging
-    name: production
-    uses: ./.github/workflows/template_deploy_libs_notebooks.yml
-    with:
-      runs-on: ubuntu-latest
-      env: production
-      DATABRICKS_NOTEBOOK_PATH: /Shared/notebooks-release/
-    secrets: inherit    
