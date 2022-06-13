@@ -4,8 +4,6 @@ on:
   workflow_run:
     workflows: ["Notebook dev CI"]
     types: [completed]
-    branches:
-      - 'dev'
 
 jobs:
   deploy-dev:
