@@ -1,6 +1,10 @@
-name: Notebook CI
+name: Notebook dev CI
 
-on: workflow_dispatch
+on:
+  pull_request:
+    types: [opened, reopened]
+    branches:    
+      - 'dev'    
 
 jobs:
   build:
