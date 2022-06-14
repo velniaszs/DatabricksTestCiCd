@@ -1,8 +1,7 @@
 name: Notebook CD Dev
 
- on: 
+on:
   workflow_dispatch:
-
 
 jobs:
   deploy-dev:
