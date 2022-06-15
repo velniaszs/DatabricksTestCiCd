@@ -1,10 +1,10 @@
-name: Notebook dev CI
+name: Notebook prod CI
 
 on:
   pull_request:
     types: [opened, reopened]
     branches:  
-      - 'dev'   
+      - 'main'   
 
 jobs:
   build:
@@ -15,7 +15,7 @@ jobs:
     uses: ./.github/workflows/template_deploy_libs_notebooks.yml
     with:
       runs-on: ubuntu-latest
-      env: DEV
+      env: production
       DATABRICKS_NOTEBOOK_PATH: /Shared/notebook-tests/dbxbuild_${{github.run_number}}/
     secrets: inherit
     needs: build
@@ -23,7 +23,7 @@ jobs:
     uses: ./.github/workflows/template_test_notebooks.yml
     with:
       runs-on: ubuntu-latest
-      env: DEV
+      env: production
       DATABRICKS_NOTEBOOK_PATH: /Shared/notebook-tests/dbxbuild_${{github.run_number}}/
     secrets: inherit
     needs: deploy
