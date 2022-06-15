@@ -74,4 +74,3 @@ jobs:
       env:
         DATABRICKS_HOST: ${{ secrets.databricksDomain }}
         DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
-        DATABRICKS_NOTEBOOK_PATH: ${{ inputs.DATABRICKS_NOTEBOOK_PATH }}
