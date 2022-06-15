@@ -1,0 +1,102 @@
+name: template test notebooks
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Platform to execute on
+        type: string
+        default: ubuntu-latest
+      env:
+        description: Environment deploy to
+        type: string
+        default: DEV
+      DATABRICKS_NOTEBOOK_PATH:
+        description: Location where notebooks will be deployed in Databricks
+        type: string
+        default: /Shared/notebook-tests/dbxbuild_${{github.run_number}}/     
+
+jobs:
+  deploy:
+    runs-on: ${{ inputs.runs-on }}
+    environment: ${{ inputs.env }}
+
+    steps:
+    - name: setup python 3.8
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.8"
+        architecture: "x64"        
+    - name: Install dependencies
+      run: |
+        pip install nutter
+        python -m pip install --upgrade pip
+        pip install databricks-cli 
+    - name: Install Nutter Library
+      run: |
+        databricks libraries install --cluster-id $CLUSTER --pypi-package nutter
+      env:
+        DATABRICKS_HOST: ${{ secrets.databricksDomain }}
+        DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
+        CLUSTER: ${{ secrets.databricksClusterId}
+    - name: Execute Nutter
+      run: |
+         nutter run $NOTEBOOK_PATH $CLUSTER --recursive --junit_report
+      env:
+        DATABRICKS_HOST: ${{ secrets.databricksDomain }}
+        DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
+        CLUSTER: ${{ secrets.databricksClusterId }}
+        DATABRICKS_NOTEBOOK_PATH: ${{ inputs.databricksNotebookPath }}
+    - name: Deploy notebooks
+      run: |
+        echo "Uploading notebooks at ./notebook_jobs to workspace ${{ inputs.DATABRICKS_NOTEBOOK_PATH }} ..."
+        databricks workspace import_dir --overwrite "./notebook_jobs" "${{ inputs.DATABRICKS_NOTEBOOK_PATH }}"
+      env:
+        DATABRICKS_HOST: ${{ secrets.databricksDomain }}
+        DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
+        DATABRICKS_NOTEBOOK_PATH: ${{ inputs.databricksNotebookPath }}
+
+#######################################################
+
+ jobs:
+- deployment: run_notebook_test
+  dependsOn: deploy_notebooks
+  environment: ${{ parameters.environmentName }}
+  displayName: 'Test notebooks with nutter'
+  pool:
+    vmImage: 'ubuntu-latest'
+  variables:
+    pythonWorkingDir: '.'
+    pythonVersion: 3.8
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - task: UsePythonVersion@0
+          inputs:
+            versionSpec: '$(pythonVersion)'
+
+        - script: |
+            pip install nutter
+          displayName: 'Install Nutter'
+
+        - script: |
+            python -m pip install --upgrade pip
+            pip install databricks-cli
+          displayName: 'Setup Databricks CLI'
+
+        - script: |
+            databricks libraries install --cluster-id $CLUSTER --pypi-package nutter
+          displayName: 'Install Nutter Library'
+          env:
+            DATABRICKS_HOST: ${{ parameters.databricksDomain}}
+            DATABRICKS_TOKEN: ${{ parameters.databricksToken}}
+            CLUSTER: ${{ parameters.databricksClusterId}}
+        - script: |
+            nutter run $NOTEBOOK_PATH $CLUSTER --recursive --junit_report
+          displayName: 'Execute Nutter'
+          env:
+            CLUSTER: ${{ parameters.databricksClusterId}}
+            DATABRICKS_HOST: ${{ parameters.databricksDomain}}
+            DATABRICKS_TOKEN: ${{ parameters.databricksToken}}
+            NOTEBOOK_PATH: ${{ parameters.databricksNotebookPath}}
