@@ -26,4 +26,4 @@ jobs:
       env: DEV
       DATABRICKS_NOTEBOOK_PATH: /Shared/notebook-tests/dbxbuild_${{github.run_number}}/
     secrets: inherit
-    needs: deploy-dev
+    needs: deploy
