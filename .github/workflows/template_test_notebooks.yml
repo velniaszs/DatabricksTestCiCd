@@ -42,6 +42,7 @@ jobs:
     - name: Execute Nutter
       run: |
          nutter run ${{ inputs.DATABRICKS_NOTEBOOK_PATH }} $CLUSTER --recursive --junit_report
+      timeout-minutes: 10
       env:
         DATABRICKS_HOST: ${{ secrets.databricksDomain }}
         DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
