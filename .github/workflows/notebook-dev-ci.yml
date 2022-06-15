@@ -11,7 +11,7 @@ jobs:
     uses: ./.github/workflows/template_build_artifacts_databricks.yml
     with:
       runs-on: ubuntu-latest
-  deploy-dev:
+  deploy:
     uses: ./.github/workflows/template_deploy_libs_notebooks.yml
     with:
       runs-on: ubuntu-latest
