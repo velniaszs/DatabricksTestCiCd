@@ -17,7 +17,7 @@ on:
         default: /Shared/notebook-tests/dbxbuild_${{github.run_number}}/     
 
 jobs:
-  deploy:
+  test:
     runs-on: ${{ inputs.runs-on }}
     environment: ${{ inputs.env }}
 
@@ -38,65 +38,12 @@ jobs:
       env:
         DATABRICKS_HOST: ${{ secrets.databricksDomain }}
         DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
-        CLUSTER: ${{ secrets.databricksClusterId}
+        CLUSTER: ${{ secrets.databricksClusterId }}
     - name: Execute Nutter
       run: |
-         nutter run $NOTEBOOK_PATH $CLUSTER --recursive --junit_report
+         nutter run ${{ inputs.DATABRICKS_NOTEBOOK_PATH }} $CLUSTER --recursive --junit_report
+      timeout-minutes: 10
       env:
         DATABRICKS_HOST: ${{ secrets.databricksDomain }}
         DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
         CLUSTER: ${{ secrets.databricksClusterId }}
-        DATABRICKS_NOTEBOOK_PATH: ${{ inputs.databricksNotebookPath }}
-    - name: Deploy notebooks
-      run: |
-        echo "Uploading notebooks at ./notebook_jobs to workspace ${{ inputs.DATABRICKS_NOTEBOOK_PATH }} ..."
-        databricks workspace import_dir --overwrite "./notebook_jobs" "${{ inputs.DATABRICKS_NOTEBOOK_PATH }}"
-      env:
-        DATABRICKS_HOST: ${{ secrets.databricksDomain }}
-        DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
-        DATABRICKS_NOTEBOOK_PATH: ${{ inputs.databricksNotebookPath }}
-
-#######################################################
-
- jobs:
-- deployment: run_notebook_test
-  dependsOn: deploy_notebooks
-  environment: ${{ parameters.environmentName }}
-  displayName: 'Test notebooks with nutter'
-  pool:
-    vmImage: 'ubuntu-latest'
-  variables:
-    pythonWorkingDir: '.'
-    pythonVersion: 3.8
-  strategy:
-    runOnce:
-      deploy:
-        steps:
-        - task: UsePythonVersion@0
-          inputs:
-            versionSpec: '$(pythonVersion)'
-
-        - script: |
-            pip install nutter
-          displayName: 'Install Nutter'
-
-        - script: |
-            python -m pip install --upgrade pip
-            pip install databricks-cli
-          displayName: 'Setup Databricks CLI'
-
-        - script: |
-            databricks libraries install --cluster-id $CLUSTER --pypi-package nutter
-          displayName: 'Install Nutter Library'
-          env:
-            DATABRICKS_HOST: ${{ parameters.databricksDomain}}
-            DATABRICKS_TOKEN: ${{ parameters.databricksToken}}
-            CLUSTER: ${{ parameters.databricksClusterId}}
-        - script: |
-            nutter run $NOTEBOOK_PATH $CLUSTER --recursive --junit_report
-          displayName: 'Execute Nutter'
-          env:
-            CLUSTER: ${{ parameters.databricksClusterId}}
-            DATABRICKS_HOST: ${{ parameters.databricksDomain}}
-            DATABRICKS_TOKEN: ${{ parameters.databricksToken}}
-            NOTEBOOK_PATH: ${{ parameters.databricksNotebookPath}}
