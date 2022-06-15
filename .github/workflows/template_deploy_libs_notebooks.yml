@@ -22,12 +22,14 @@ jobs:
     environment: ${{ inputs.env }}
 
     steps:
- #   - name: Download Artifacts
- #     uses: dawidd6/action-download-artifact@v2
- #     with:
- #       github_token: ${{ secrets.GITHUB_TOKEN }}
- #       workflow: notebook-github-ci.yml
- #       name: artifacts
+    - uses: Azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - uses: Azure/get-keyvault-secrets@v1
+      with: 
+        keyvault: "kvab${{ inputs.env }}"
+        secrets: 'DATABRICKSDOMAIN, DATABRICKSTOKEN, DATABRICKSCLUSTERID'
+      id: kvSecret
     - name: Download Artifacts
       uses: actions/download-artifact@v3
       with:
@@ -49,8 +51,8 @@ jobs:
         databricks fs mkdirs dbfs:/lib-dist
         databricks fs cp "./libs" dbfs:/lib-dist --recursive --overwrite
       env:
-        DATABRICKS_HOST: ${{ secrets.databricksDomain }}
-        DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
+        DATABRICKS_HOST: ${{ steps.kvSecret.outputs.DATABRICKSDOMAIN }}
+        DATABRICKS_TOKEN: ${{ steps.kvSecret.outputs.DATABRICKSTOKEN }}
     - name: Install libs in Databricks
       run: |
         echo "Installing libs dbfs:/lib-dist ..."
@@ -64,13 +66,13 @@ jobs:
             fi
         done
       env:
-        DATABRICKS_HOST: ${{ secrets.databricksDomain }}
-        DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
-        CLUSTER: ${{ secrets.databricksClusterId }}
+        DATABRICKS_HOST: ${{ steps.kvSecret.outputs.DATABRICKSDOMAIN }}
+        DATABRICKS_TOKEN: ${{ steps.kvSecret.outputs.DATABRICKSTOKEN }}
+        CLUSTER: ${{ steps.kvSecret.outputs.DATABRICKSCLUSTERID }}
     - name: Deploy notebooks
       run: |
         echo "Uploading notebooks at ./notebook_jobs to workspace ${{ inputs.DATABRICKS_NOTEBOOK_PATH }} ..."
         databricks workspace import_dir --overwrite "./notebook_jobs" "${{ inputs.DATABRICKS_NOTEBOOK_PATH }}"
       env:
-        DATABRICKS_HOST: ${{ secrets.databricksDomain }}
-        DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
+        DATABRICKS_HOST: ${{ steps.kvSecret.outputs.DATABRICKSDOMAIN }}
+        DATABRICKS_TOKEN: ${{ steps.kvSecret.outputs.DATABRICKSTOKEN }}
