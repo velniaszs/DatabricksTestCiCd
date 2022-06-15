@@ -17,7 +17,7 @@ on:
         default: /Shared/notebook-tests/dbxbuild_${{github.run_number}}/     
 
 jobs:
-  deploy:
+  test:
     runs-on: ${{ inputs.runs-on }}
     environment: ${{ inputs.env }}
 
@@ -41,17 +41,8 @@ jobs:
         CLUSTER: ${{ secrets.databricksClusterId }}
     - name: Execute Nutter
       run: |
-         nutter run $NOTEBOOK_PATH $CLUSTER --recursive --junit_report
+         nutter run ${{ inputs.DATABRICKS_NOTEBOOK_PATH }} $CLUSTER --recursive --junit_report
       env:
         DATABRICKS_HOST: ${{ secrets.databricksDomain }}
         DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
         CLUSTER: ${{ secrets.databricksClusterId }}
-        DATABRICKS_NOTEBOOK_PATH: ${{ inputs.DATABRICKS_NOTEBOOK_PATH }}
-    - name: Deploy notebooks
-      run: |
-        echo "Uploading notebooks at ./notebook_jobs to workspace ${{ inputs.DATABRICKS_NOTEBOOK_PATH }} ..."
-        databricks workspace import_dir --overwrite "./notebook_jobs" "${{ inputs.DATABRICKS_NOTEBOOK_PATH }}"
-      env:
-        DATABRICKS_HOST: ${{ secrets.databricksDomain }}
-        DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
-        DATABRICKS_NOTEBOOK_PATH: ${{ inputs.DATABRICKS_NOTEBOOK_PATH }}
