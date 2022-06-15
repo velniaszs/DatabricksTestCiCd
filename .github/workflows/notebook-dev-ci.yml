@@ -1,0 +1,29 @@
+name: Notebook dev CI
+
+on:
+  pull_request:
+    types: [opened, reopened]
+    branches:  
+      - 'dev'   
+
+jobs:
+  build:
+    uses: ./.github/workflows/template_build_artifacts_databricks.yml
+    with:
+      runs-on: ubuntu-latest
+  deploy:
+    uses: ./.github/workflows/template_deploy_libs_notebooks.yml
+    with:
+      runs-on: ubuntu-latest
+      env: DEV
+      DATABRICKS_NOTEBOOK_PATH: /Shared/notebook-tests/dbxbuild_${{github.run_number}}/
+    secrets: inherit
+    needs: build
+  test:
+    uses: ./.github/workflows/template_test_notebooks.yml
+    with:
+      runs-on: ubuntu-latest
+      env: DEV
+      DATABRICKS_NOTEBOOK_PATH: /Shared/notebook-tests/dbxbuild_${{github.run_number}}/
+    secrets: inherit
+    needs: deploy

@@ -1,0 +1,49 @@
+name: template test notebooks
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Platform to execute on
+        type: string
+        default: ubuntu-latest
+      env:
+        description: Environment deploy to
+        type: string
+        default: DEV
+      DATABRICKS_NOTEBOOK_PATH:
+        description: Location where notebooks will be deployed in Databricks
+        type: string
+        default: /Shared/notebook-tests/dbxbuild_${{github.run_number}}/     
+
+jobs:
+  test:
+    runs-on: ${{ inputs.runs-on }}
+    environment: ${{ inputs.env }}
+
+    steps:
+    - name: setup python 3.8
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.8"
+        architecture: "x64"        
+    - name: Install dependencies
+      run: |
+        pip install nutter
+        python -m pip install --upgrade pip
+        pip install databricks-cli 
+    - name: Install Nutter Library
+      run: |
+        databricks libraries install --cluster-id $CLUSTER --pypi-package nutter
+      env:
+        DATABRICKS_HOST: ${{ secrets.databricksDomain }}
+        DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
+        CLUSTER: ${{ secrets.databricksClusterId }}
+    - name: Execute Nutter
+      run: |
+         nutter run ${{ inputs.DATABRICKS_NOTEBOOK_PATH }} $CLUSTER --recursive --junit_report
+      timeout-minutes: 10
+      env:
+        DATABRICKS_HOST: ${{ secrets.databricksDomain }}
+        DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
+        CLUSTER: ${{ secrets.databricksClusterId }}

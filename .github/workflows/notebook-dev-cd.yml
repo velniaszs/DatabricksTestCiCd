@@ -1,0 +1,14 @@
+name: Notebook CD Dev
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-dev:
+    name: DEV
+    uses: ./.github/workflows/template_deploy_libs_notebooks.yml
+    with:
+      runs-on: ubuntu-latest
+      env: DEV
+      DATABRICKS_NOTEBOOK_PATH: /Shared/notebook-tests/dbxbuild_${{github.run_number}}/
+    secrets: inherit

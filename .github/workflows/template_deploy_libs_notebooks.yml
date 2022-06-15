@@ -22,11 +22,15 @@ jobs:
     environment: ${{ inputs.env }}
 
     steps:
+ #   - name: Download Artifacts
+ #     uses: dawidd6/action-download-artifact@v2
+ #     with:
+ #       github_token: ${{ secrets.GITHUB_TOKEN }}
+ #       workflow: notebook-github-ci.yml
+ #       name: artifacts
     - name: Download Artifacts
-      uses: dawidd6/action-download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        workflow: notebook-github-ci.yml
         name: artifacts
     - name: setup python 3.8
       uses: actions/setup-python@v3
@@ -70,4 +74,3 @@ jobs:
       env:
         DATABRICKS_HOST: ${{ secrets.databricksDomain }}
         DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
-        DATABRICKS_NOTEBOOK_PATH: ${{ inputs.databricksNotebookPath }}

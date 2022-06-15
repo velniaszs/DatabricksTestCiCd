@@ -1,10 +1,16 @@
-name: Notebook CI
+name: template build
 
-on: workflow_dispatch
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Platform to execute on
+        type: string
+        default: ubuntu-latest
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runs-on }}
 
     steps:
     - uses: actions/checkout@v3
@@ -33,4 +39,4 @@ jobs:
         path: artifacts
     - name: Run Unit tests
       run: |
-        pytest common/tests --cov
+        pytest common/tests --cov        
