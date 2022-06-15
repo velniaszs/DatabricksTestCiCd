@@ -46,7 +46,7 @@ jobs:
         DATABRICKS_HOST: ${{ secrets.databricksDomain }}
         DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
         CLUSTER: ${{ secrets.databricksClusterId }}
-        DATABRICKS_NOTEBOOK_PATH: ${{ inputs.databricksNotebookPath }}
+        DATABRICKS_NOTEBOOK_PATH: ${{ inputs.DATABRICKS_NOTEBOOK_PATH }}
     - name: Deploy notebooks
       run: |
         echo "Uploading notebooks at ./notebook_jobs to workspace ${{ inputs.DATABRICKS_NOTEBOOK_PATH }} ..."
@@ -54,4 +54,4 @@ jobs:
       env:
         DATABRICKS_HOST: ${{ secrets.databricksDomain }}
         DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
-        DATABRICKS_NOTEBOOK_PATH: ${{ inputs.databricksNotebookPath }}
+        DATABRICKS_NOTEBOOK_PATH: ${{ inputs.DATABRICKS_NOTEBOOK_PATH }}

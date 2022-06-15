@@ -8,13 +8,10 @@ on:
 
 jobs:
   build:
-  #  name: DEV
     uses: ./.github/workflows/template_build_artifacts_databricks.yml
     with:
       runs-on: ubuntu-latest
-
-  deploy-dev:
-   # name: DEV
+  deploy:
     uses: ./.github/workflows/template_deploy_libs_notebooks.yml
     with:
       runs-on: ubuntu-latest
@@ -22,9 +19,7 @@ jobs:
       DATABRICKS_NOTEBOOK_PATH: /Shared/notebook-tests/dbxbuild_${{github.run_number}}/
     secrets: inherit
     needs: build
-
   test:
-   # name: DEV
     uses: ./.github/workflows/template_test_notebooks.yml
     with:
       runs-on: ubuntu-latest
