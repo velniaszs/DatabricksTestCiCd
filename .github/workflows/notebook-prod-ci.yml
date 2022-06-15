@@ -17,6 +17,7 @@ jobs:
       runs-on: ubuntu-latest
       env: production
       DATABRICKS_NOTEBOOK_PATH: /Shared/notebook-tests/dbxbuild_${{github.run_number}}/
+      kvname: kvabprod
     secrets: inherit
     needs: build
   test:
@@ -25,5 +26,6 @@ jobs:
       runs-on: ubuntu-latest
       env: production
       DATABRICKS_NOTEBOOK_PATH: /Shared/notebook-tests/dbxbuild_${{github.run_number}}/
+      kvname: kvabprod
     secrets: inherit
     needs: deploy

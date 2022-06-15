@@ -14,7 +14,11 @@ on:
       DATABRICKS_NOTEBOOK_PATH:
         description: Location where notebooks will be deployed in Databricks
         type: string
-        default: /Shared/notebook-tests/dbxbuild_${{github.run_number}}/     
+        default: /Shared/notebook-tests/dbxbuild_${{github.run_number}}/   
+      kvname:
+        description: keyvault name
+        type: string
+        default: kvabdev
 
 jobs:
   test:
@@ -27,7 +31,7 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
     - uses: Azure/get-keyvault-secrets@v1
       with: 
-        keyvault: "kvab${{ inputs.env }}"
+        keyvault: "${{ inputs.kvname }}"
         secrets: 'DATABRICKSDOMAIN, DATABRICKSTOKEN, DATABRICKSCLUSTERID'
       id: kvSecret
     - name: setup python 3.8
