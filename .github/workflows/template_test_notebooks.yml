@@ -22,6 +22,14 @@ jobs:
     environment: ${{ inputs.env }}
 
     steps:
+    - uses: Azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - uses: Azure/get-keyvault-secrets@v1
+      with: 
+        keyvault: "kvab${{ inputs.env }}"
+        secrets: 'DATABRICKSDOMAIN, DATABRICKSTOKEN, DATABRICKSCLUSTERID'
+      id: kvSecret
     - name: setup python 3.8
       uses: actions/setup-python@v3
       with:
@@ -36,14 +44,14 @@ jobs:
       run: |
         databricks libraries install --cluster-id $CLUSTER --pypi-package nutter
       env:
-        DATABRICKS_HOST: ${{ secrets.databricksDomain }}
-        DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
-        CLUSTER: ${{ secrets.databricksClusterId }}
+        DATABRICKS_HOST: ${{ steps.kvSecret.outputs.DATABRICKSDOMAIN }}
+        DATABRICKS_TOKEN: ${{ steps.kvSecret.outputs.DATABRICKSTOKEN }}
+        CLUSTER: ${{ steps.kvSecret.outputs.DATABRICKSCLUSTERID }}
     - name: Execute Nutter
       run: |
          nutter run ${{ inputs.DATABRICKS_NOTEBOOK_PATH }} $CLUSTER --recursive --junit_report
       timeout-minutes: 10
       env:
-        DATABRICKS_HOST: ${{ secrets.databricksDomain }}
-        DATABRICKS_TOKEN: ${{ secrets.databricksToken }}
-        CLUSTER: ${{ secrets.databricksClusterId }}
+        DATABRICKS_HOST: ${{ steps.kvSecret.outputs.DATABRICKSDOMAIN }}
+        DATABRICKS_TOKEN: ${{ steps.kvSecret.outputs.DATABRICKSTOKEN }}
+        CLUSTER: ${{ steps.kvSecret.outputs.DATABRICKSCLUSTERID }}
